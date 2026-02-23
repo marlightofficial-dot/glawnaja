@@ -9,109 +9,37 @@
             --bg: #000000;
             --text: #ffffff;
             --text-muted: #b5bac1;
+            --card: #18191c;
         }
 
-        body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            font-family: 'Inter', 'Segoe UI', sans-serif;
-            background-color: var(--bg);
-        }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', sans-serif; background-color: var(--bg); }
 
-        /* Контейнер для видео-фона */
-        .video-background {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -2;
-            overflow: hidden;
-        }
+        /* Видео-фон и оверлей */
+        .video-background { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; overflow: hidden; }
+        .video-background iframe { width: 100vw; height: 56.25vw; min-height: 100vh; min-width: 177.77vh; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none; }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.88); z-index: -1; }
 
-        .video-background iframe {
-            width: 100vw;
-            height: 56.25vw;
-            min-height: 100vh;
-            min-width: 177.77vh;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            pointer-events: none;
-        }
+        /* Навигация и Профиль */
+        .navbar { position: fixed; top: 0; width: 100%; padding: 20px 40px; display: flex; justify-content: flex-end; box-sizing: border-box; z-index: 100; }
+        .profile-btn { background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 10px 20px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: 0.3s; }
+        .profile-btn:hover { background: rgba(255,255,255,0.2); }
+        .avatar-circle { width: 30px; height: 30px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; }
 
-        /* Очень сильное затемнение */
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.88); /* Сделал еще чуть темнее для стиля */
-            z-index: -1;
-        }
+        /* Контент */
+        .container { display: flex; align-items: center; justify-content: center; height: 100vh; text-align: center; }
+        .content-box { padding: 40px; background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(8px); border-radius: 30px; border: 1px solid rgba(255, 255, 255, 0.08); max-width: 700px; }
+        h1 { font-size: 4.5rem; margin: 0; background: linear-gradient(135deg, #fff 40%, #5865F2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-transform: uppercase; letter-spacing: 4px; }
+        .btn-apply { background: var(--primary); color: white; padding: 20px 60px; border-radius: 18px; text-decoration: none; font-weight: 800; font-size: 1.2rem; transition: 0.3s; box-shadow: 0 10px 30px rgba(88, 101, 242, 0.4); display: inline-block; margin-top: 30px; }
 
-        .container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            text-align: center;
-            position: relative;
-            z-index: 1;
-        }
-
-        .content-box {
-            padding: 40px;
-            background: rgba(255, 255, 255, 0.02);
-            backdrop-filter: blur(8px);
-            border-radius: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            max-width: 700px;
-        }
-
-        h1 {
-            font-size: 4.5rem;
-            margin: 0;
-            background: linear-gradient(135deg, #fff 40%, #5865F2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-transform: uppercase;
-            letter-spacing: 4px;
-        }
-
-        p {
-            color: var(--text-muted);
-            font-size: 1.3rem;
-            margin: 25px 0 45px;
-            line-height: 1.6;
-            font-weight: 300;
-        }
-
-        .btn-apply {
-            background: var(--primary);
-            color: white;
-            padding: 20px 60px;
-            border-radius: 18px;
-            text-decoration: none;
-            font-weight: 800;
-            font-size: 1.2rem;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 10px 30px rgba(88, 101, 242, 0.4);
-            border: 1px solid rgba(255,255,255,0.1);
-            display: inline-block;
-        }
-
-        .btn-apply:hover {
-            transform: scale(1.08);
-            background: #4752c4;
-            box-shadow: 0 15px 45px rgba(88, 101, 242, 0.7);
-        }
+        /* Модальное окно личного кабинета */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-content { background: var(--card); padding: 30px; border-radius: 20px; width: 350px; border: 1px solid #2b2d31; position: relative; }
+        .close-modal { position: absolute; top: 15px; right: 20px; font-size: 24px; cursor: pointer; color: var(--text-muted); }
+        .modal-content h3 { margin-top: 0; }
+        .input-group { margin-bottom: 20px; text-align: left; }
+        .input-group label { display: block; font-size: 11px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 5px; font-weight: bold; }
+        .input-group input { width: 100%; padding: 10px; background: #1e1f22; border: 1px solid #2b2d31; color: white; border-radius: 8px; outline: none; box-sizing: border-box; }
+        .save-btn { width: 100%; padding: 12px; background: var(--primary); border: none; color: white; border-radius: 8px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -119,8 +47,14 @@
     <div class="video-background">
         <iframe src="https://www.youtube.com/embed/SIdW9vB9n6E?autoplay=1&mute=1&controls=0&loop=1&playlist=SIdW9vB9n6E&showinfo=0&rel=0&modestbranding=1" allow="autoplay"></iframe>
     </div>
-
     <div class="overlay"></div>
+
+    <nav class="navbar">
+        <div class="profile-btn" onclick="toggleModal()">
+            <div class="avatar-circle" id="nav-avatar">?</div>
+            <span id="nav-username">Гость</span>
+        </div>
+    </nav>
 
     <div class="container">
         <div class="content-box">
@@ -130,5 +64,65 @@
         </div>
     </div>
 
+    <div class="modal" id="profileModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="toggleModal()">&times;</span>
+            <h3>Личный кабинет</h3>
+            
+            <div class="input-group">
+                <label>Никнейм на сайте</label>
+                <input type="text" id="edit-username" placeholder="Твой ник">
+            </div>
+
+            <div class="input-group">
+                <label>Привязать Discord ID</label>
+                <input type="text" id="edit-discord" placeholder="Swight#0001">
+            </div>
+
+            <button class="save-btn" onclick="saveProfile()">СОХРАНИТЬ ИЗМЕНЕНИЯ</button>
+        </div>
+    </div>
+
+    <script>
+        // Загрузка данных профиля при открытии страницы
+        window.onload = function() {
+            const savedName = localStorage.getItem('smarloww_user') || 'Гость';
+            const savedDiscord = localStorage.getItem('smarloww_discord') || '';
+            
+            document.getElementById('nav-username').innerText = savedName;
+            document.getElementById('edit-username').value = savedName === 'Гость' ? '' : savedName;
+            document.getElementById('edit-discord').value = savedDiscord;
+            updateAvatar(savedName);
+        };
+
+        function toggleModal() {
+            const modal = document.getElementById('profileModal');
+            modal.style.display = (modal.style.display === 'flex') ? 'none' : 'flex';
+        }
+
+        function saveProfile() {
+            const newName = document.getElementById('edit-username').value || 'Гость';
+            const newDiscord = document.getElementById('edit-discord').value;
+
+            localStorage.setItem('smarloww_user', newName);
+            localStorage.setItem('smarloww_discord', newDiscord);
+
+            document.getElementById('nav-username').innerText = newName;
+            updateAvatar(newName);
+            toggleModal();
+            alert("Профиль обновлен!");
+        }
+
+        function updateAvatar(name) {
+            const firstLetter = name.charAt(0).toUpperCase();
+            document.getElementById('nav-avatar').innerText = firstLetter;
+        }
+
+        // Закрытие модалки при клике вне её
+        window.onclick = function(event) {
+            const modal = document.getElementById('profileModal');
+            if (event.target == modal) toggleModal();
+        }
+    </script>
 </body>
 </html>
