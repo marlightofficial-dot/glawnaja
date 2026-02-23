@@ -2,103 +2,190 @@
 <html lang="ru">
 <head>
     <meta charset="utf-8">
-    <title>Smarloww | Анкета</title>
+    <title>Smarloww | Подача заявки</title>
     <style>
-        body { background: #313338; color: #dbdee1; font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
-        .card { background: #2b2d31; padding: 30px; border-radius: 10px; width: 350px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); border: 1px solid #1e1f22; }
-        h2 { text-align: center; color: white; margin-bottom: 20px; }
-        label { display: block; font-size: 12px; margin-bottom: 5px; color: #b5bac1; text-transform: uppercase; font-weight: bold; }
-        input, textarea, select { width: 100%; padding: 10px; margin-bottom: 15px; background: #1e1f22; border: 1px solid #1e1f22; color: white; border-radius: 4px; box-sizing: border-box; outline: none; }
-        .btn { width: 100%; padding: 12px; background: #5865F2; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 16px; }
-        .btn:disabled { background: #404249; cursor: not-allowed; }
+        :root {
+            --primary: #5865F2;
+            --bg: #111214;
+            --card: #2b2d31;
+            --input: #1e1f22;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: white;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .card {
+            background: var(--card);
+            padding: 40px;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 24px;
+            color: #fff;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 12px;
+            color: #b5bac1;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            font-weight: 800;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            background: var(--input);
+            border: 1px solid transparent;
+            color: white;
+            border-radius: 8px;
+            box-sizing: border-box;
+            transition: 0.2s;
+            font-size: 15px;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            border-color: var(--primary);
+            outline: none;
+            background: #111214;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            background: #4752c4;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body>
 
 <div class="card">
-    <h2>Анкета в команду</h2>
+    <h2>Подача заявки</h2>
     <form id="anketa">
-        <label>Ник в Discord</label>
-        <input type="text" id="name" placeholder="Swight#0001" required>
+        <div class="form-group">
+            <label>Ник Discord</label>
+            <input type="text" id="name" placeholder="User#0000" required>
+        </div>
         
-        <label>Ваш Email</label>
-        <input type="email" id="email" placeholder="example@mail.com" required>
+        <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="email" placeholder="you@example.com" required>
+        </div>
+
+        <div class="form-group" style="display: flex; gap: 15px;">
+            <div style="flex: 1;">
+                <label>Возраст</label>
+                <input type="number" id="age" placeholder="18" required>
+            </div>
+            <div style="flex: 2;">
+                <label>Должность</label>
+                <select id="role">
+                    <option value="Хелпер">Хелпер</option>
+                    <option value="Модератор">Модератор</option>
+                    <option value="Админ">Админ</option>
+                </select>
+            </div>
+        </div>
         
-        <label>Возраст</label>
-        <input type="number" id="age" placeholder="18" required>
+        <div class="form-group">
+            <label>О себе</label>
+            <textarea id="about" rows="3" placeholder="Расскажите о своем опыте..."></textarea>
+        </div>
         
-        <label>Должность</label>
-        <select id="role">
-            <option value="Хелпер">Хелпер</option>
-            <option value="Модератор">Модератор</option>
-            <option value="Админ">Админ</option>
-        </select>
-        
-        <label>О себе</label>
-        <textarea id="about" rows="3"></textarea>
-        
-        <button type="submit" id="submit-btn" class="btn">ОТПРАВИТЬ</button>
+        <button type="submit" class="btn" id="s-btn">ОТПРАВИТЬ АНКЕТУ</button>
     </form>
 </div>
 
 <script>
-    // Твой вебхук
-    const WEBHOOK_URL = "https://discord.com/api/webhooks/1475580603184320614/JWKjiXXf0dpGqxXzkSlTbkasrZLhThNASqjfTiguLD7ZILWXHM8CfTTwdyJ48L7tWp6P";
+    const WEBHOOK = "https://discord.com/api/webhooks/1475580603184320614/JWKjiXXf0dpGqxXzkSlTbkasrZLhThNASqjfTiguLD7ZILWXHM8CfTTwdyJ48L7tWp6P";
 
-    document.getElementById('anketa').addEventListener('submit', async function(e) {
+    document.getElementById('anketa').onsubmit = async (e) => {
         e.preventDefault();
-        
-        const btn = document.getElementById('submit-btn');
+        const btn = document.getElementById('s-btn');
         btn.disabled = true;
         btn.innerText = "ОТПРАВКА...";
 
         const data = {
-            name: document.getElementById('name').value,
-            email: document.getElementById('email').value,
-            age: document.getElementById('age').value,
-            role: document.getElementById('role').value,
-            about: document.getElementById('about').value || "Не указано"
+            n: document.getElementById('name').value,
+            em: document.getElementById('email').value,
+            ag: document.getElementById('age').value,
+            rl: document.getElementById('role').value,
+            ab: document.getElementById('about').value || "Не указано"
         };
 
-        // Формируем сообщение для Discord
-        const discordMessage = {
-            username: "Smarloww Bot",
-            embeds: [{
-                title: "📩 Новая заявка в команду!",
-                color: 5814783,
-                fields: [
-                    { name: "👤 Ник", value: data.name, inline: true },
-                    { name: "📧 Почта", value: data.email, inline: true },
-                    { name: "🎂 Возраст", value: data.age, inline: true },
-                    { name: "🛠 Роль", value: data.role, inline: true },
-                    { name: "📝 О себе", value: data.about }
-                ],
-                footer: { text: "Система анкет Smarloww" },
-                timestamp: new Date()
-            }]
-        };
+        const mailAccept = `mailto:${data.em}?subject=Принят&body=Привет, ${data.n}! Ты принят на роль ${data.rl}.`;
+        const mailDecline = `mailto:${data.em}?subject=Отказ&body=Привет, ${data.n}. Твоя анкета отклонена.`;
 
         try {
-            const response = await fetch(WEBHOOK_URL, {
+            const res = await fetch(WEBHOOK, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(discordMessage)
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    username: "Smarloww Bot",
+                    embeds: [{
+                        title: "🚀 Новая заявка в команду!",
+                        color: 5793266,
+                        fields: [
+                            { name: "👤 Кандидат", value: `**${data.n}**`, inline: true },
+                            { name: "🎂 Возраст", value: data.ag, inline: true },
+                            { name: "🛠 Роль", value: `\`${data.rl}\``, inline: true },
+                            { name: "📧 Почта", value: data.em },
+                            { name: "📝 О себе", value: data.ab },
+                            { name: "⚡ Решение", value: `[✅ ПРИНЯТЬ](${mailAccept}) | [❌ ОТКЛОНИТЬ](${mailDecline})` }
+                        ],
+                        timestamp: new Date()
+                    }]
+                })
             });
 
-            if (response.ok) {
-                alert("Успешно! Заявка появилась в Discord.");
-                document.getElementById('anketa').reset();
+            if (res.ok) {
+                alert("Заявка успешно доставлена в Discord!");
+                window.location.href = "index.html";
             } else {
-                const errText = await response.text();
-                alert("Ошибка Discord: " + errText);
+                throw new Error("Ошибка Discord");
             }
-        } catch (error) {
-            alert("Ошибка сети: " + error.message);
-        } finally {
+        } catch (err) {
+            alert("Ошибка! Проверь интернет. " + err);
             btn.disabled = false;
-            btn.innerText = "ОТПРАВИТЬ";
+            btn.innerText = "ОТПРАВИТЬ СНОВА";
         }
-    });
+    };
 </script>
 </body>
 </html>
