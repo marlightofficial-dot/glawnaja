@@ -6,64 +6,94 @@
     <style>
         body { background: #0f0f0f; color: white; font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
         .card { background: #212121; padding: 30px; border-radius: 12px; width: 350px; border: 1px solid #333; }
-        input, textarea, select { width: 100%; padding: 12px; margin: 10px 0; background: #0f0f0f; border: 1px solid #333; color: white; border-radius: 4px; box-sizing: border-box; }
-        .btn { width: 100%; padding: 12px; background: #3ea6ff; color: #000; border: none; border-radius: 20px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+        h2 { text-align: center; margin-bottom: 20px; }
+        label { display: block; font-size: 12px; color: #aaa; text-transform: uppercase; margin-top: 15px; font-weight: bold; }
+        input, textarea, select { width: 100%; padding: 12px; margin-top: 5px; background: #0f0f0f; border: 1px solid #333; color: white; border-radius: 4px; box-sizing: border-box; }
+        .btn { width: 100%; padding: 12px; background: #ff0000; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 25px; text-transform: uppercase; }
+        .btn:disabled { background: #555; }
     </style>
 </head>
 <body>
 
 <div class="card">
-    <h2 style="text-align:center">Анкета</h2>
+    <h2>Анкета в команду</h2>
     <form id="anketa">
-        <input type="text" id="name" placeholder="Ник Discord" required>
-        <input type="email" id="email" placeholder="Твой Email" required>
-        <input type="number" id="age" placeholder="Возраст" required>
+        <label>Ник Discord</label>
+        <input type="text" id="name" placeholder="Например: Swight#0001" required>
+        
+        <label>Твой Email</label>
+        <input type="email" id="email" placeholder="Для ответа" required>
+        
+        <label>Возраст</label>
+        <input type="number" id="age" placeholder="Сколько тебе лет?" required>
+        
+        <label>Должность</label>
         <select id="role">
             <option value="Хелпер">Хелпер</option>
             <option value="Модератор">Модератор</option>
             <option value="Админ">Админ</option>
         </select>
-        <textarea id="about" rows="3" placeholder="О себе"></textarea>
-        <button type="submit" class="btn">ОТПРАВИТЬ</button>
+        
+        <label>О себе</label>
+        <textarea id="about" rows="3" placeholder="Расскажи немного о себе"></textarea>
+        
+        <button type="submit" class="btn" id="s-btn">Отправить заявку</button>
     </form>
 </div>
 
 <script>
+    // Твой проверенный Webhook
     const WEBHOOK = "https://discord.com/api/webhooks/1475580603184320614/JWKjiXXf0dpGqxXzkSlTbkasrZLhThNASqjfTiguLD7ZILWXHM8CfTTwdyJ48L7tWp6P";
 
     document.getElementById('anketa').onsubmit = async (e) => {
         e.preventDefault();
-        
+        const btn = document.getElementById('s-btn');
+        btn.disabled = true;
+        btn.innerText = "ОТПРАВЛЯЕМ...";
+
         const n = document.getElementById('name').value;
         const em = document.getElementById('email').value;
-        const ag = document.getElementById('age').value; // Возраст теперь берется правильно
+        const ag = document.getElementById('age').value;
         const rl = document.getElementById('role').value;
-        
-        // Ссылки mailto: для ручного ответа
-        const mailAccept = `mailto:${em}?subject=Принят&body=Привет, ты принят на роль ${rl}!`;
-        const mailDecline = `mailto:${em}?subject=Отказ&body=Привет, твоя анкета отклонена.`;
+        const ab = document.getElementById('about').value;
 
-        await fetch(WEBHOOK, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({
-                username: "Smarloww Bot",
-                embeds: [{
-                    title: "📩 Новая заявка!",
-                    color: 5814783,
-                    fields: [
-                        { name: "👤 Ник", value: n, inline: true },
-                        { name: "📧 Почта", value: em, inline: true },
-                        { name: "🎂 Возраст", value: ag, inline: true },
-                        { name: "🛠 Роль", value: rl, inline: true },
-                        { name: "⚡ Решение (вручную)", value: `[✅ ПРИНЯТЬ](${mailAccept}) | [❌ ОТКЛОНИТЬ](${mailDecline})` }
-                    ]
-                }]
-            })
-        });
+        // Ссылки для ручного ответа через почту
+        const mailAcc = `mailto:${em}?subject=Принят&body=Привет, ${n}! Ты принят на роль ${rl}.`;
+        const mailDec = `mailto:${em}?subject=Отказ&body=Привет, ${n}. Твоя анкета на роль ${rl} отклонена.`;
 
-        alert("Заявка улетела! Возвращаем тебя к видео...");
-        window.location.href = "index.html"; // Кидает обратно на ютуб-страницу
+        try {
+            const response = await fetch(WEBHOOK, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    username: "Smarloww System",
+                    embeds: [{
+                        title: "📩 Новая заявка в команду!",
+                        color: 16711680,
+                        fields: [
+                            { name: "👤 Ник", value: n, inline: true },
+                            { name: "📧 Почта", value: em, inline: true },
+                            { name: "🎂 Возраст", value: ag, inline: true },
+                            { name: "🛠 Роль", value: rl, inline: true },
+                            { name: "📝 О себе", value: ab || "Пусто" },
+                            { name: "⚡ Решение (Email)", value: `[✅ ПРИНЯТЬ](${mailAcc}) | [❌ ОТКЛОНИТЬ](${mailDec})` }
+                        ],
+                        footer: { text: "Нажми на решение, чтобы написать кандидату" }
+                    }]
+                })
+            });
+
+            if (response.ok) {
+                alert("Заявка успешно отправлена! Теперь можешь посмотреть видео.");
+                window.location.href = "index.html";
+            } else {
+                throw new Error("Ошибка сервера Discord");
+            }
+        } catch (err) {
+            alert("ОШИБКА: Заявка не ушла. Проверь интернет или Webhook. " + err);
+            btn.disabled = false;
+            btn.innerText = "ПОПРОБОВАТЬ СНОВА";
+        }
     };
 </script>
 </body>
