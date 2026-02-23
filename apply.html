@@ -4,41 +4,15 @@
     <meta charset="utf-8">
     <title>Smarloww | Анкета</title>
     <style>
-        body {
-            background: #0f0f10;
-            color: #eeeeee;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-        }
-        .card {
-            background: #18191c;
-            padding: 40px;
-            border-radius: 20px;
-            width: 100%;
-            max-width: 420px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.7);
-            border: 1px solid #2b2d31;
-        }
-        h2 { text-align: center; margin-bottom: 30px; letter-spacing: 1px; }
+        body { background: #0f0f10; color: #eeeeee; font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .card { background: #18191c; padding: 40px; border-radius: 20px; width: 100%; max-width: 420px; box-shadow: 0 10px 40px rgba(0,0,0,0.7); border: 1px solid #2b2d31; }
+        h2 { text-align: center; margin-bottom: 30px; letter-spacing: 1px; color: #fff; }
         label { display: block; font-size: 11px; margin-bottom: 8px; color: #8e9297; text-transform: uppercase; font-weight: 800; }
-        input, textarea, select { 
-            width: 100%; padding: 12px; margin-bottom: 20px; 
-            background: #1e1f22; border: 1px solid #1e1f22; 
-            color: white; border-radius: 8px; box-sizing: border-box; 
-            outline: none; transition: 0.3s;
-        }
+        input, textarea, select { width: 100%; padding: 12px; margin-bottom: 20px; background: #1e1f22; border: 1px solid #1e1f22; color: white; border-radius: 8px; box-sizing: border-box; outline: none; transition: 0.3s; }
         input:focus, textarea:focus, select:focus { border-color: #5865F2; }
-        .btn { 
-            width: 100%; padding: 15px; background: #5865F2; 
-            color: white; border: none; border-radius: 10px; 
-            cursor: pointer; font-weight: bold; font-size: 16px; 
-            transition: 0.3s; text-transform: uppercase;
-        }
+        .btn { width: 100%; padding: 15px; background: #5865F2; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 16px; transition: 0.3s; text-transform: uppercase; }
         .btn:hover { background: #4752c4; transform: translateY(-2px); }
+        .btn:disabled { background: #4f545c; cursor: not-allowed; transform: none; }
     </style>
 </head>
 <body>
@@ -91,33 +65,39 @@
             ab: document.getElementById('about').value || "Не указано"
         };
 
-        const mailAccept = `mailto:${data.em}?subject=Принят&body=Привет! Ты принят на роль ${data.rl}.`;
-        const mailDecline = `mailto:${data.em}?subject=Отказ&body=Твоя заявка на роль ${data.rl} отклонена.`;
+        const mailAccept = `mailto:${data.em}?subject=Принят&body=Привет, ${data.n}! Ты принят на роль ${data.rl}.`;
+        const mailDecline = `mailto:${data.em}?subject=Отказ&body=Привет, ${data.n}. Твоя заявка отклонена.`;
 
-        await fetch(WEBHOOK, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({
-                username: "Smarloww Security",
-                embeds: [{
-                    title: "⚔️ Новая заявка в штаб!",
-                    color: 3447003,
-                    fields: [
-                        { name: "👤 Боец", value: data.n, inline: true },
-                        { name: "🎂 Возраст", value: data.ag, inline: true },
-                        { name: "🛠 Пост", value: data.rl, inline: true },
-                        { name: "📧 Почта", value: data.em },
-                        { name: "📝 Досье", value: data.ab },
-                        { name: "⚡ Вердикт", value: `[✅ ПРИНЯТЬ](${mailAccept}) | [❌ ОТКЛОНИТЬ](${mailDecline})` }
-                    ],
-                    footer: { text: "Smarloww Recruitment System" },
-                    timestamp: new Date()
-                }]
-            })
-        });
+        try {
+            await fetch(WEBHOOK, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    username: "Smarloww Security",
+                    embeds: [{
+                        title: "⚔️ Новая заявка в штаб!",
+                        color: 3447003,
+                        fields: [
+                            { name: "👤 Боец", value: data.n, inline: true },
+                            { name: "🎂 Возраст", value: data.ag, inline: true },
+                            { name: "🛠 Пост", value: data.rl, inline: true },
+                            { name: "📧 Почта", value: data.em },
+                            { name: "📝 Досье", value: data.ab },
+                            { name: "⚡ Вердикт", value: `[✅ ПРИНЯТЬ](${mailAccept}) | [❌ ОТКЛОНИТЬ](${mailDecline})` }
+                        ],
+                        footer: { text: "Recruitment System" },
+                        timestamp: new Date()
+                    }]
+                })
+            });
 
-        alert("Заявка успешно отправлена! Ожидайте ответа.");
-        window.location.href = "index.html";
+            alert("Заявка успешно отправлена! Ожидайте ответа.");
+            window.location.href = "index.html";
+        } catch (err) {
+            alert("Ошибка! Проверь интернет.");
+            btn.disabled = false;
+            btn.innerText = "ОТПРАВИТЬ ЗАЯВКУ";
+        }
     };
 </script>
 </body>
