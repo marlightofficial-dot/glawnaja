@@ -6,37 +6,44 @@
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <style>
         body { background: #313338; color: #dbdee1; font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
-        .card { background: #2b2d31; padding: 30px; border-radius: 10px; width: 380px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); border: 1px solid #404249; }
-        input, textarea, select { width: 100%; padding: 12px; margin-bottom: 15px; background: #1e1f22; border: 1px solid #1e1f22; color: white; border-radius: 4px; box-sizing: border-box; outline: none; }
-        .btn { width: 100%; padding: 14px; background: #5865F2; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
-        .back { display: block; margin-top: 15px; color: #b5bac1; text-decoration: none; font-size: 14px; text-align: center; }
+        .card { background: #2b2d31; padding: 30px; border-radius: 10px; width: 350px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+        h2 { text-align: center; color: white; margin-bottom: 20px; }
+        label { display: block; font-size: 12px; margin: 10px 0 5px; color: #b5bac1; text-transform: uppercase; font-weight: bold; }
+        input, textarea, select { width: 100%; padding: 10px; background: #1e1f22; border: 1px solid #1e1f22; color: white; border-radius: 4px; box-sizing: border-box; }
+        .btn { width: 100%; padding: 12px; background: #5865F2; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 20px; }
+        .back-link { display: block; text-align: center; margin-top: 15px; color: #b5bac1; text-decoration: none; font-size: 13px; }
     </style>
 </head>
 <body>
 
 <div class="card">
-    <h2 style="text-align:center; color:white;">Анкета</h2>
+    <h2>Анкета</h2>
     <form id="anketa">
-        <input type="text" id="name" placeholder="Ник в Discord" required>
-        <input type="email" id="email" placeholder="Email" required>
-        <input type="number" id="age" placeholder="Возраст" required>
+        <label>Ник Discord</label>
+        <input type="text" id="name" required>
+        <label>Твой Email</label>
+        <input type="email" id="email" required>
+        <label>Возраст</label>
+        <input type="number" id="age" required>
+        <label>Должность</label>
         <select id="role">
             <option value="Хелпер">Хелпер</option>
             <option value="Модератор">Модератор</option>
             <option value="Админ">Админ</option>
         </select>
-        <textarea id="about" rows="3" placeholder="О себе"></textarea>
+        <label>О себе</label>
+        <textarea id="about" rows="3"></textarea>
         <button type="submit" class="btn">ОТПРАВИТЬ</button>
-        <a href="index.html" class="back">← Вернуться назад</a>
+        <a href="index.html" class="back-link">← На главную</a>
     </form>
 </div>
 
 <script>
+    // Твои ключи
     emailjs.init("01DGSF2cD56lx_iXW");
-
     const WEBHOOK = "https://discord.com/api/webhooks/1475580603184320614/JWKjiXXf0dpGqxXzkSlTbkasrZLhThNASqjfTiguLD7ZILWXHM8CfTTwdyJ48L7tWp6P";
-    
-    // Обработка кнопок ПРИНЯТЬ/ОТКЛОНИТЬ
+
+    // Логика кнопок ПРИНЯТЬ/ОТКЛОНИТЬ (Email)
     const params = new URLSearchParams(window.location.search);
     if (params.has('action')) {
         const action = params.get('action');
@@ -45,20 +52,21 @@
             to_email: params.get('email'),
             status: action === 'accept' ? "Ваша заявка ПРИНЯТА!" : "Ваша заявка ОТКЛОНЕНА."
         }).then(() => {
-            alert("Email отправлен!");
+            alert("Email отправлен кандидату!");
             window.close();
         });
     }
 
+    // Отправка в Discord
     document.getElementById('anketa').onsubmit = async (e) => {
         e.preventDefault();
         const n = document.getElementById('name').value;
         const em = document.getElementById('email').value;
         
-        // Получаем адрес текущей страницы
-        const myUrl = window.location.href.split('?')[0];
-        const acceptLink = `${myUrl}?action=accept&email=${em}&name=${encodeURIComponent(n)}`;
-        const declineLink = `${myUrl}?action=decline&email=${em}&name=${encodeURIComponent(n)}`;
+        // Ссылка на ТЕКУЩУЮ страницу анкеты
+        const currentUrl = window.location.href.split('?')[0];
+        const aLink = `${currentUrl}?action=accept&email=${em}&name=${encodeURIComponent(n)}`;
+        const dLink = `${currentUrl}?action=decline&email=${em}&name=${encodeURIComponent(n)}`;
 
         await fetch(WEBHOOK, {
             method: 'POST',
@@ -67,16 +75,18 @@
                 username: "Smarloww Bot",
                 embeds: [{
                     title: "📩 Новая заявка!",
+                    color: 5814783,
                     fields: [
-                        { name: "👤 Ник", value: n, inline: true },
+                        { name: "👤 Кандидат", value: n, inline: true },
                         { name: "📧 Почта", value: em, inline: true },
                         { name: "🛠 Роль", value: document.getElementById('role').value, inline: true },
-                        { name: "⚡ Решение", value: `[✅ ПРИНЯТЬ](${acceptLink}) | [❌ ОТКЛОНИТЬ](${declineLink})` }
+                        { name: "📝 О себе", value: document.getElementById('about').value },
+                        { name: "⚡ Решение", value: `[✅ ПРИНЯТЬ](${aLink}) | [❌ ОТКЛОНИТЬ](${dLink})` }
                     ]
                 }]
             })
         });
-        alert("Заявка отправлена!");
+        alert("Анкета улетела в Discord!");
     };
 </script>
 </body>
