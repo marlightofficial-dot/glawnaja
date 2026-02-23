@@ -2,17 +2,91 @@
 <html lang="ru">
 <head>
     <meta charset="utf-8">
-    <title>Smarloww Community</title>
+    <title>Smarloww | Главная</title>
     <style>
-        body { background: #1e1f22; color: white; font-family: sans-serif; margin: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; }
-        h1 { font-size: 48px; margin-bottom: 20px; color: #5865F2; }
-        .btn-apply { background: #5865F2; color: white; padding: 15px 40px; border-radius: 5px; text-decoration: none; font-weight: bold; font-size: 20px; transition: 0.3s; }
-        .btn-apply:hover { background: #4752c4; transform: translateY(-2px); }
+        :root {
+            --primary: #5865F2;
+            --bg: #0f0f10;
+            --card-bg: #1e1f22;
+            --text: #ffffff;
+            --text-muted: #b5bac1;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Анимированный фон */
+        .bg-glow {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(88,101,242,0.15) 0%, rgba(0,0,0,0) 70%);
+            z-index: -1;
+            filter: blur(50px);
+        }
+
+        .container {
+            text-align: center;
+            padding: 40px;
+            background: rgba(30, 31, 34, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            max-width: 500px;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin: 0;
+            background: linear-gradient(135deg, #fff 0%, #5865F2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
+        }
+
+        p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin: 20px 0 40px;
+            line-height: 1.6;
+        }
+
+        .btn-apply {
+            background: var(--primary);
+            color: white;
+            padding: 16px 45px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: inline-block;
+            box-shadow: 0 10px 20px rgba(88, 101, 242, 0.3);
+        }
+
+        .btn-apply:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 30px rgba(88, 101, 242, 0.5);
+            background: #4752c4;
+        }
     </style>
 </head>
 <body>
-    <h1>Smarloww</h1>
-    <p style="color: #b5bac1; margin-bottom: 30px;">Добро пожаловать в наше сообщество.</p>
-    <a href="apply.html" class="btn-apply">ПОДАТЬ ЗАЯВКУ</a>
+    <div class="bg-glow"></div>
+    <div class="container">
+        <h1>Smarloww</h1>
+        <p>Присоединяйся к элитному подразделению проекта. Мы ищем талантливых модераторов и хелперов.</p>
+        <a href="apply.html" class="btn-apply">СТАТЬ ЧАСТЬЮ КОМАНДЫ</a>
+    </div>
 </body>
 </html>
