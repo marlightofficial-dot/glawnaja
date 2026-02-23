@@ -34,9 +34,9 @@
 
         .video-background iframe {
             width: 100vw;
-            height: 56.25vw; /* 16:9 ratio */
+            height: 56.25vw;
             min-height: 100vh;
-            min-width: 177.77vh; /* 16:9 ratio */
+            min-width: 177.77vh;
             position: absolute;
             top: 50%;
             left: 50%;
@@ -51,7 +51,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.85); /* 85% затемнения */
+            background: rgba(0, 0, 0, 0.88); /* Сделал еще чуть темнее для стиля */
             z-index: -1;
         }
 
@@ -68,47 +68,49 @@
 
         .content-box {
             padding: 40px;
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(5px);
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(8px);
             border-radius: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            max-width: 600px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            max-width: 700px;
         }
 
         h1 {
-            font-size: 4rem;
+            font-size: 4.5rem;
             margin: 0;
-            background: linear-gradient(135deg, #fff 30%, #5865F2 100%);
+            background: linear-gradient(135deg, #fff 40%, #5865F2 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             text-transform: uppercase;
-            letter-spacing: 3px;
+            letter-spacing: 4px;
         }
 
         p {
             color: var(--text-muted);
-            font-size: 1.2rem;
-            margin: 20px 0 40px;
+            font-size: 1.3rem;
+            margin: 25px 0 45px;
+            line-height: 1.6;
             font-weight: 300;
         }
 
         .btn-apply {
             background: var(--primary);
             color: white;
-            padding: 18px 50px;
-            border-radius: 15px;
+            padding: 20px 60px;
+            border-radius: 18px;
             text-decoration: none;
             font-weight: 800;
             font-size: 1.2rem;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             box-shadow: 0 10px 30px rgba(88, 101, 242, 0.4);
             border: 1px solid rgba(255,255,255,0.1);
+            display: inline-block;
         }
 
         .btn-apply:hover {
-            transform: scale(1.05);
+            transform: scale(1.08);
             background: #4752c4;
-            box-shadow: 0 15px 40px rgba(88, 101, 242, 0.6);
+            box-shadow: 0 15px 45px rgba(88, 101, 242, 0.7);
         }
     </style>
 </head>
@@ -123,7 +125,7 @@
     <div class="container">
         <div class="content-box">
             <h1>Smarloww</h1>
-            <p>Стань частью легендарного хоррор-проекта. Мы ищем тех, кто готов менять правила игры.</p>
+            <p>Стань частью легендарного сервера про разные игры. Мы ищем тех, кто готов менять правила игры и Дискорда. Будем ждать...</p>
             <a href="apply.html" class="btn-apply">ПОДАТЬ ЗАЯВКУ</a>
         </div>
     </div>
