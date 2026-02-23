@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>Smarloww | Анкета</title>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <style>
+        body { background: #313338; color: #dbdee1; font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .card { background: #2b2d31; padding: 30px; border-radius: 10px; width: 380px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); border: 1px solid #404249; }
+        input, textarea, select { width: 100%; padding: 12px; margin-bottom: 15px; background: #1e1f22; border: 1px solid #1e1f22; color: white; border-radius: 4px; box-sizing: border-box; outline: none; }
+        .btn { width: 100%; padding: 14px; background: #5865F2; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .back { display: block; margin-top: 15px; color: #b5bac1; text-decoration: none; font-size: 14px; text-align: center; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2 style="text-align:center; color:white;">Анкета</h2>
+    <form id="anketa">
+        <input type="text" id="name" placeholder="Ник в Discord" required>
+        <input type="email" id="email" placeholder="Email" required>
+        <input type="number" id="age" placeholder="Возраст" required>
+        <select id="role">
+            <option value="Хелпер">Хелпер</option>
+            <option value="Модератор">Модератор</option>
+            <option value="Админ">Админ</option>
+        </select>
+        <textarea id="about" rows="3" placeholder="О себе"></textarea>
+        <button type="submit" class="btn">ОТПРАВИТЬ</button>
+        <a href="index.html" class="back">← Вернуться назад</a>
+    </form>
+</div>
+
+<script>
+    emailjs.init("01DGSF2cD56lx_iXW");
+
+    const WEBHOOK = "https://discord.com/api/webhooks/1475580603184320614/JWKjiXXf0dpGqxXzkSlTbkasrZLhThNASqjfTiguLD7ZILWXHM8CfTTwdyJ48L7tWp6P";
+    
+    // Обработка кнопок ПРИНЯТЬ/ОТКЛОНИТЬ
+    const params = new URLSearchParams(window.location.search);
+    if (params.has('action')) {
+        const action = params.get('action');
+        emailjs.send("service_54p6rgt", "template_ycejc4h", {
+            to_name: params.get('name'),
+            to_email: params.get('email'),
+            status: action === 'accept' ? "Ваша заявка ПРИНЯТА!" : "Ваша заявка ОТКЛОНЕНА."
+        }).then(() => {
+            alert("Email отправлен!");
+            window.close();
+        });
+    }
+
+    document.getElementById('anketa').onsubmit = async (e) => {
+        e.preventDefault();
+        const n = document.getElementById('name').value;
+        const em = document.getElementById('email').value;
+        
+        // Получаем адрес текущей страницы
+        const myUrl = window.location.href.split('?')[0];
+        const acceptLink = `${myUrl}?action=accept&email=${em}&name=${encodeURIComponent(n)}`;
+        const declineLink = `${myUrl}?action=decline&email=${em}&name=${encodeURIComponent(n)}`;
+
+        await fetch(WEBHOOK, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                username: "Smarloww Bot",
+                embeds: [{
+                    title: "📩 Новая заявка!",
+                    fields: [
+                        { name: "👤 Ник", value: n, inline: true },
+                        { name: "📧 Почта", value: em, inline: true },
+                        { name: "🛠 Роль", value: document.getElementById('role').value, inline: true },
+                        { name: "⚡ Решение", value: `[✅ ПРИНЯТЬ](${acceptLink}) | [❌ ОТКЛОНИТЬ](${declineLink})` }
+                    ]
+                }]
+            })
+        });
+        alert("Заявка отправлена!");
+    };
+</script>
+</body>
+</html>
