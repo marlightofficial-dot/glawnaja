@@ -2,19 +2,103 @@
 <html lang="ru">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Smarloww | Главная</title>
+    <title>Smarloww | YouTube Home</title>
     <style>
-        body { background: #313338; color: white; font-family: sans-serif; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
-        h1 { font-size: 48px; margin-bottom: 10px; }
-        p { color: #b5bac1; font-size: 18px; margin-bottom: 30px; }
-        .btn-apply { background: #5865F2; color: white; padding: 15px 30px; border-radius: 5px; text-decoration: none; font-weight: bold; font-size: 20px; transition: 0.2s; }
-        .btn-apply:hover { background: #4752c4; transform: scale(1.05); }
+        body { background: #0f0f0f; color: white; font-family: "Roboto", Arial, sans-serif; margin: 0; padding: 20px; }
+        .nav { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; position: sticky; top: 0; background: #0f0f0f; z-index: 100; }
+        .logo { font-size: 24px; font-weight: bold; color: white; text-decoration: none; }
+        .logo span { color: #ff0000; }
+        .auth-btn { background: none; border: 1px solid #3ea6ff; color: #3ea6ff; padding: 8px 15px; border-radius: 20px; cursor: pointer; text-decoration: none; font-size: 14px; }
+        .auth-btn:hover { background: rgba(62, 166, 255, 0.1); }
+        
+        .main-container { max-width: 1200px; margin: 20px auto; }
+        .apply-banner { background: #272727; padding: 20px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .btn-apply { background: #fff; color: #000; padding: 10px 20px; border-radius: 20px; text-decoration: none; font-weight: bold; }
+
+        .video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .video-card { cursor: pointer; transition: 0.2s; }
+        .video-card:hover { transform: scale(1.03); }
+        .thumbnail { width: 100%; border-radius: 12px; aspect-ratio: 16/9; background: #272727; object-fit: cover; }
+        .video-info { display: flex; margin-top: 10px; gap: 12px; }
+        .channel-icon { width: 36px; height: 36px; background: #5865F2; border-radius: 50%; flex-shrink: 0; }
+        .video-text h4 { margin: 0; font-size: 16px; line-height: 1.4; }
+        .video-text p { color: #aaa; font-size: 14px; margin: 5px 0 0; }
+
+        #player-section { display: none; margin-bottom: 40px; }
+        .iframe-wrapper { position: relative; padding-bottom: 56.25%; height: 0; border-radius: 12px; overflow: hidden; background: #000; }
+        .iframe-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
     </style>
 </head>
 <body>
-    <h1>Smarloww Community</h1>
-    <p>Добро пожаловать. Ты хочешь стать частью нашей команды?</p>
-    <a href="apply.html" class="btn-apply">ПОДАТЬ ЗАЯВКУ</a>
+
+<div class="nav">
+    <a href="#" class="logo">Smarloww<span>Tube</span></a>
+    <a href="https://accounts.google.com/ServiceLogin?service=youtube" target="_blank" class="auth-btn">👤 Войти</a>
+</div>
+
+<div class="main-container">
+    <div class="apply-banner">
+        <div>
+            <h3 style="margin:0">Хочешь в команду?</h3>
+            <p style="margin:5px 0 0; color:#aaa">Пока ждешь рекомендации, заполни анкету!</p>
+        </div>
+        <a href="apply.html" class="btn-apply">Подать заявку</a>
+    </div>
+
+    <div id="player-section">
+        <div class="iframe-wrapper">
+            <iframe id="main-video" src="" allowfullscreen></iframe>
+        </div>
+        <h2 id="video-title" style="margin-top:15px"></h2>
+        <hr style="border: 0; border-top: 1px solid #333;">
+    </div>
+
+    <h3>Рекомендации</h3>
+    <div class="video-grid" id="recommendations">
+        </div>
+</div>
+
+<script>
+    // Список видео (можно добавлять свои ID)
+    const videos = [
+        { id: "mrV8kK5t0V8", title: "Bruno Mars - I Just Might", channel: "Bruno Mars" },
+        { id: "SZpiiixlHWY", title: "Tyla - IS IT (Official)", channel: "TylaVEVO" },
+        { id: "7sxVHYZ_PnA", title: "Harry Styles - Aperture", channel: "HarryStyles" },
+        { id: "hwUixddbmrQ", title: "Morgan Wallen - I Got Better", channel: "MorganWallen" },
+        { id: "vaGf8fmtBr4", title: "Maroon 5, LISA - Priceless", channel: "Maroon 5" },
+        { id: "pvf_Qv4rmLM", title: "J. Cole - Two Six", channel: "J. Cole" }
+    ];
+
+    const grid = document.getElementById('recommendations');
+    const playerSection = document.getElementById('player-section');
+    const mainIframe = document.getElementById('main-video');
+    const mainTitle = document.getElementById('video-title');
+
+    function loadVideos() {
+        videos.forEach(video => {
+            const card = document.createElement('div');
+            card.className = 'video-card';
+            card.innerHTML = `
+                <img class="thumbnail" src="https://img.youtube.com/vi/${video.id}/mqdefault.jpg">
+                <div class="video-info">
+                    <div class="channel-icon"></div>
+                    <div class="video-text">
+                        <h4>${video.title}</h4>
+                        <p>${video.channel}</p>
+                    </div>
+                </div>
+            `;
+            card.onclick = () => {
+                window.scrollTo({top: 0, behavior: 'smooth'});
+                playerSection.style.display = 'block';
+                mainIframe.src = `https://www.youtube.com/embed/${video.id}?autoplay=1`;
+                mainTitle.innerText = video.title;
+            };
+            grid.appendChild(card);
+        });
+    }
+
+    loadVideos();
+</script>
 </body>
 </html>
