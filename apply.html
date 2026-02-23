@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>Smarloww | Анкета</title>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <style>
         body { background: #313338; color: #dbdee1; font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
         .card { background: #2b2d31; padding: 30px; border-radius: 10px; width: 350px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); border: 1px solid #1e1f22; }
@@ -16,68 +17,76 @@
 <body>
 
 <div class="card">
-    <h2>Анкета в команду</h2>
+    <h2>Анкета Smarloww</h2>
     <form id="anketa">
         <label>Ник в Discord</label>
-        <input type="text" id="name" placeholder="Swight#0001" required>
-        
+        <input type="text" id="name" required>
         <label>Ваш Email</label>
-        <input type="email" id="email" placeholder="example@mail.com" required>
-        
+        <input type="email" id="email" required>
         <label>Возраст</label>
-        <input type="number" id="age" placeholder="Сколько тебе лет?" required>
-        
+        <input type="number" id="age" required>
         <label>Должность</label>
         <select id="role">
             <option value="Хелпер">Хелпер</option>
             <option value="Модератор">Модератор</option>
             <option value="Админ">Админ</option>
         </select>
-        
         <label>О себе</label>
         <textarea id="about" rows="3"></textarea>
-        
         <button type="submit" class="btn">ОТПРАВИТЬ</button>
     </form>
 </div>
 
 <script>
+    // Твой ключ из EmailJS
+    emailjs.init("01DGSF2cD56lx_iXW");
+
+    // Твой Webhook Discord
     const WEBHOOK = "https://discord.com/api/webhooks/1475580603184320614/JWKjiXXf0dpGqxXzkSlTbkasrZLhThNASqjfTiguLD7ZILWXHM8CfTTwdyJ48L7tWp6P";
 
+    // Обработка кнопок принятия/отказа
+    const params = new URLSearchParams(window.location.search);
+    if (params.has('action')) {
+        const action = params.get('action');
+        emailjs.send("service_54p6rgt", "template_ycejc4h", {
+            to_name: params.get('name'),
+            to_email: params.get('email'),
+            status: action === 'accept' ? "Ваша заявка ПРИНЯТА!" : "Ваша заявка ОТКЛОНЕНА."
+        }).then(() => {
+            alert("Ответ отправлен кандидату на почту!");
+            window.close();
+        });
+    }
+
+    // Отправка в Discord при заполнении
     document.getElementById('anketa').onsubmit = async (e) => {
         e.preventDefault();
-        
         const n = document.getElementById('name').value;
         const em = document.getElementById('email').value;
-        const ag = document.getElementById('age').value;
-        const rl = document.getElementById('role').value;
-        const ab = document.getElementById('about').value;
-
-        // Ссылки для ручного ответа (mailto)
-        const mailAccept = `mailto:${em}?subject=Принят&body=Привет, ${n}! Ты принят на роль ${rl}.`;
-        const mailDecline = `mailto:${em}?subject=Отказ&body=Привет, ${n}. Твоя анкета на роль ${rl} отклонена.`;
+        const currentUrl = window.location.href.split('?')[0];
+        
+        const aLink = `${currentUrl}?action=accept&email=${em}&name=${encodeURIComponent(n)}`;
+        const dLink = `${currentUrl}?action=decline&email=${em}&name=${encodeURIComponent(n)}`;
 
         await fetch(WEBHOOK, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
-                username: "Smarloww Bot",
+                username: "Smarloww System",
                 embeds: [{
-                    title: "📩 Новая заявка!",
+                    title: "📩 Новая заявка в команду",
                     color: 5814783,
                     fields: [
                         { name: "👤 Ник", value: n, inline: true },
                         { name: "📧 Почта", value: em, inline: true },
-                        { name: "🎂 Возраст", value: ag, inline: true },
-                        { name: "🛠 Роль", value: rl, inline: true },
-                        { name: "📝 О себе", value: ab || "Не указано" },
-                        { name: "⚡ Решение", value: `[✅ ПРИНЯТЬ](${mailAccept}) | [❌ ОТКЛОНИТЬ](${mailDecline})` }
+                        { name: "🛠 Роль", value: document.getElementById('role').value, inline: true },
+                        { name: "📝 О себе", value: document.getElementById('about').value },
+                        { name: "⚡ Решение", value: `[✅ ПРИНЯТЬ](${aLink}) | [❌ ОТКЛОНИТЬ](${dLink})` }
                     ]
                 }]
             })
         });
-
-        alert("Заявка отправлена в Discord!");
+        alert("Заявка улетела в Discord! Проверяй канал #admin.");
     };
 </script>
 </body>
