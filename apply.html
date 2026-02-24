@@ -69,7 +69,8 @@
             margin-top: 20px;
         }
 
-        .submit-btn:hover { background: #4752c4; transform: scale(1.02); }
+        .submit-btn:hover { background: #4752c4; transform: scale(1.01); }
+        .submit-btn:disabled { background: #4f545c; cursor: not-allowed; }
     </style>
 </head>
 <body>
@@ -85,7 +86,7 @@
                 </div>
                 <div class="field">
                     <label>Твоя Почта (Email)</label>
-                    <input type="email" id="email" placeholder="example@mail.com" required>
+                    <input type="email" id="email" placeholder="mail@example.com" required>
                 </div>
                 <div class="field">
                     <label>Возраст</label>
@@ -115,13 +116,13 @@
 </div>
 
 <script>
-    const WEBHOOK = "https://discord.com/api/webhooks/1475580603184320614/JWKjiXXf0dpGqxXzkSlTbkasrZLhThNASqjfTiguLD7ZILWXHM8CfTTwdyJ48L7tWp6P";
+    const WEBHOOK_URL = "https://discord.com/api/webhooks/1475580603184320614/JWKjiXXf0dpGqxXzkSlTbkasrZLhThNASqjfTiguLD7ZILWXHM8CfTTwdyJ48L7tWp6P";
 
     document.getElementById('anketa').onsubmit = async (e) => {
         e.preventDefault();
         const btn = document.getElementById('s-btn');
         btn.disabled = true;
-        btn.innerText = "ОБРАБОТКА...";
+        btn.innerText = "ОТПРАВКА...";
 
         const data = {
             n: document.getElementById('name').value,
@@ -131,42 +132,45 @@
             ab: document.getElementById('about').value || "Не указано"
         };
 
+        // Тексты для писем (от marlight.official@gmail.com)
         const subAcc = encodeURIComponent("Smarloww Security - Заявка ПРИНЯТА");
         const bodyAcc = encodeURIComponent(`Привет, ${data.n}!\n\nТвоя заявка на роль ${data.rl} была одобрена администрацией Smarloww.\n\nДобро пожаловать в команду!`);
         
-        const subDec = encodeURIComponent("Smarloww Security - Заявка ОТКЛОНЕНА");
+        const subDec = encodeURIComponent("Smarloww Security - Ответ по заявке");
         const bodyDec = encodeURIComponent(`Привет, ${data.n}.\n\nК сожалению, твоя заявка на роль ${data.rl} была отклонена.\n\nПопробуй в следующий раз.`);
 
+        // Формируем прямые ссылки на Gmail черновик
         const linkAcc = `https://mail.google.com/mail/?view=cm&fs=1&to=${data.em}&su=${subAcc}&body=${bodyAcc}`;
         const linkDec = `https://mail.google.com/mail/?view=cm&fs=1&to=${data.em}&su=${subDec}&body=${bodyDec}`;
 
-        try {
-            await fetch(WEBHOOK, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({
-                    username: "Smarloww Security",
-                    embeds: [{
-                        title: "🛡️ ПОСТУПИЛА НОВАЯ ЗАЯВКА",
-                        color: 5814783,
-                        fields: [
-                            { name: "👤 Кандидат", value: data.n, inline: true },
-                            { name: "🎂 Возраст", value: data.ag, inline: true },
-                            { name: "🛠 Пост", value: data.rl, inline: true },
-                            { name: "📧 Почта", value: data.em },
-                            { name: "📝 О себе", value: data.ab },
-                            { name: "⚡ РЕШЕНИЕ АДМИНИСТРАЦИИ", value: `[✅ ПРИНЯТЬ](${linkAcc})  |  [❌ ОТКЛОНИТЬ](${linkDec})` }
-                        ],
-                        footer: { text: "Отправитель: marlight.official@gmail.com" },
-                        timestamp: new Date()
-                    }]
-                })
-            });
+        const payload = {
+            username: "Smarloww Recruitment",
+            embeds: [{
+                title: "🛡️ НОВАЯ ЗАЯВКА В ШТАБ",
+                color: 5814783,
+                fields: [
+                    { name: "👤 Позывной", value: `**${data.n}**`, inline: true },
+                    { name: "🎂 Возраст", value: data.ag, inline: true },
+                    { name: "🛠 Роль", value: `\`${data.rl}\``, inline: true },
+                    { name: "📧 Почта", value: data.em },
+                    { name: "📝 Досье", value: data.ab },
+                    { name: "⚡ Вердикт", value: `[✅ ПРИНЯТЬ](${linkAcc})\n[❌ ОТКЛОНИТЬ](${linkDec})` }
+                ],
+                footer: { text: "Отправитель: marlight.official@gmail.com" },
+                timestamp: new Date()
+            }]
+        };
 
-            alert("Заявка улетела в Discord!");
+        try {
+            await fetch(WEBHOOK_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            alert("Заявка успешно отправлена!");
             window.location.href = "index.html";
         } catch (err) {
-            alert("Что-то пошло не так...");
+            alert("Ошибка при отправке!");
             btn.disabled = false;
         }
     };
