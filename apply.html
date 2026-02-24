@@ -2,50 +2,209 @@
 <html lang="ru">
 <head>
     <meta charset="utf-8">
-    <title>Smarloww | Анкета</title>
+    <title>Smarloww Security | Заявка</title>
     <style>
-        body { background: #0f0f10; color: #eeeeee; font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
-        .card { background: #18191c; padding: 40px; border-radius: 20px; width: 100%; max-width: 420px; box-shadow: 0 10px 40px rgba(0,0,0,0.7); border: 1px solid #2b2d31; }
-        h2 { text-align: center; margin-bottom: 30px; letter-spacing: 1px; color: #fff; }
-        label { display: block; font-size: 11px; margin-bottom: 8px; color: #8e9297; text-transform: uppercase; font-weight: 800; }
-        input, textarea, select { width: 100%; padding: 12px; margin-bottom: 20px; background: #1e1f22; border: 1px solid #1e1f22; color: white; border-radius: 8px; box-sizing: border-box; outline: none; transition: 0.3s; }
-        input:focus, textarea:focus, select:focus { border-color: #5865F2; }
-        .btn { width: 100%; padding: 15px; background: #5865F2; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 16px; transition: 0.3s; text-transform: uppercase; }
-        .btn:hover { background: #4752c4; transform: translateY(-2px); }
-        .btn:disabled { background: #4f545c; cursor: not-allowed; transform: none; }
+        :root {
+            --primary: #5865F2;
+            --bg: #1e1f22;
+            --card-bg: #2b2d31;
+            --input-bg: #1e1f22;
+            --text: #ffffff;
+            --text-muted: #b5bac1;
+            --accent-glow: rgba(88, 101, 242, 0.15);
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 0% 0%, var(--accent-glow) 0%, transparent 25%),
+                radial-gradient(circle at 100% 100%, var(--accent-glow) 0%, transparent 25%);
+        }
+
+        .container {
+            background: var(--card-bg);
+            width: 100%;
+            max-width: 800px;
+            border-radius: 12px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .header {
+            padding: 20px 40px;
+            background: rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .header-logo {
+            width: 30px;
+            height: 30px;
+            background: var(--primary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .form-content {
+            padding: 40px;
+        }
+
+        h2 {
+            margin: 0 0 30px 0;
+            font-size: 28px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .grid-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        label {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        input, select, textarea {
+            background: var(--input-bg);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 12px;
+            border-radius: 6px;
+            color: white;
+            font-size: 14px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--primary);
+            background: #111214;
+        }
+
+        .footer-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .submit-btn {
+            display: block;
+            width: 250px;
+            margin: 40px auto 0;
+            padding: 15px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.3s;
+        }
+
+        .submit-btn:hover {
+            background: #4752c4;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(88, 101, 242, 0.4);
+        }
+
+        .submit-btn:disabled {
+            background: #4f545c;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body>
 
-<div class="card">
-    <h2>ЛИЧНАЯ АНКЕТА</h2>
-    <form id="anketa">
-        <label>Твой Discord Ник</label>
-        <input type="text" id="name" placeholder="Swight#0001" required>
+<div class="container">
+    <div class="header">
+        <div class="header-logo">S</div>
+        <div style="font-weight: bold; opacity: 0.8;">Smarloww Security</div>
+    </div>
+
+    <div class="form-content">
+        <h2>Подать заявку в штаб</h2>
         
-        <label>Email для связи</label>
-        <input type="email" id="email" placeholder="mail@example.com" required>
-        
-        <div style="display: flex; gap: 20px;">
-            <div style="flex: 1;">
-                <label>Возраст</label>
-                <input type="number" id="age" placeholder="18" required>
+        <form id="anketa">
+            <div class="grid-inputs">
+                <div class="input-group">
+                    <label>Твой Discord Ник</label>
+                    <input type="text" id="name" placeholder="Discord#0000" required>
+                </div>
+                <div class="input-group">
+                    <label>Email для связи</label>
+                    <input type="email" id="email" placeholder="mail@example.com" required>
+                </div>
+                <div class="input-group">
+                    <label>Возраст</label>
+                    <input type="number" id="age" placeholder="18" required>
+                </div>
+                <div class="input-group">
+                    <label>Желаемый пост</label>
+                    <select id="role">
+                        <option value="Хелпер">Хелпер</option>
+                        <option value="Модератор">Модератор</option>
+                        <option value="Админ">Админ</option>
+                    </select>
+                </div>
             </div>
-            <div style="flex: 1;">
-                <label>Роль</label>
-                <select id="role">
-                    <option value="Хелпер">Хелпер</option>
-                    <option value="Модератор">Модератор</option>
-                    <option value="Админ">Админ</option>
-                </select>
+
+            <div class="input-group">
+                <label>Почему мы должны выбрать тебя?</label>
+                <textarea id="about" rows="4" placeholder="Расскажи о себе и своем опыте..."></textarea>
             </div>
-        </div>
-        
-        <label>Почему ты?</label>
-        <textarea id="about" rows="3" placeholder="Расскажи о своих сильных сторонах..."></textarea>
-        
-        <button type="submit" class="btn" id="s-btn">ОТПРАВИТЬ ЗАЯВКУ</button>
-    </form>
+
+            <div class="footer-info">
+                <div>
+                    <div class="info-item">👤 Боец — твой статус в системе</div>
+                    <div class="info-item">📩 Ответ придет на указанную почту</div>
+                    <div class="info-item">⚡ Быстрая проверка заявок</div>
+                </div>
+                <div style="background: rgba(0,0,0,0.1); padding: 15px; border-radius: 8px;">
+                    <div style="color: var(--primary); font-weight: bold; margin-bottom: 5px;">Recruitment System</div>
+                    Заявка будет отправлена в защищенный канал штаба Smarloww.
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn" id="s-btn">ОТПРАВИТЬ ЗАЯВКУ</button>
+        </form>
+    </div>
 </div>
 
 <script>
@@ -66,7 +225,7 @@
         };
 
         const mailAccept = `mailto:${data.em}?subject=Принят&body=Привет, ${data.n}! Ты принят на роль ${data.rl}.`;
-        const mailDecline = `mailto:${data.em}?subject=Отказ&body=Привет, ${data.n}. Твоя заявка отклонена.`;
+        const mailDecline = `mailto:${data.em}?subject=Отказ&body=Привет. Твоя заявка отклонена.`;
 
         try {
             await fetch(WEBHOOK, {
@@ -75,26 +234,26 @@
                 body: JSON.stringify({
                     username: "Smarloww Security",
                     embeds: [{
-                        title: "⚔️ Новая заявка в штаб!",
-                        color: 3447003,
+                        title: "⚔️ НОВАЯ ЗАЯВКА В ШТАБ",
+                        color: 5814783,
                         fields: [
-                            { name: "👤 Боец", value: data.n, inline: true },
+                            { name: "👤 Позывной", value: `**${data.n}**`, inline: true },
                             { name: "🎂 Возраст", value: data.ag, inline: true },
-                            { name: "🛠 Пост", value: data.rl, inline: true },
+                            { name: "🛠 Роль", value: `\`${data.rl}\``, inline: true },
                             { name: "📧 Почта", value: data.em },
                             { name: "📝 Досье", value: data.ab },
                             { name: "⚡ Вердикт", value: `[✅ ПРИНЯТЬ](${mailAccept}) | [❌ ОТКЛОНИТЬ](${mailDecline})` }
                         ],
-                        footer: { text: "Recruitment System" },
+                        footer: { text: "Smarloww Security Protocol" },
                         timestamp: new Date()
                     }]
                 })
             });
 
-            alert("Заявка успешно отправлена! Ожидайте ответа.");
+            alert("Заявка успешно отправлена! Ожидайте ответа на почту.");
             window.location.href = "index.html";
         } catch (err) {
-            alert("Ошибка! Проверь интернет.");
+            alert("Ошибка сети. Попробуй еще раз.");
             btn.disabled = false;
             btn.innerText = "ОТПРАВИТЬ ЗАЯВКУ";
         }
