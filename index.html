@@ -6,176 +6,180 @@
     <style>
         :root {
             --primary: #5865F2;
-            --bg: #000000;
-            --card: #18191c;
+            --bg: #09090b;
+            --side: #121214;
+            --chat-bg: #18191c;
             --text: #ffffff;
-            --text-muted: #b5bac1;
-            --accent: #ed4245;
+            --text-muted: #a1a1aa;
         }
 
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--text); }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); overflow: hidden; }
 
-        /* Видео-фон */
-        .video-background { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; overflow: hidden; }
-        .video-background iframe { width: 100vw; height: 56.25vw; min-height: 100vh; min-width: 177.77vh; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none; }
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); z-index: -1; }
+        /* Видео-фон (очень темный) */
+        .v-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; overflow: hidden; }
+        .v-bg iframe { width: 100vw; height: 56.25vw; min-height: 100vh; min-width: 177.77vh; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none; opacity: 0.2; }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle, transparent 20%, var(--bg) 100%); z-index: -1; }
 
-        /* Навигация */
-        .navbar { position: fixed; top: 0; width: 100%; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; z-index: 100; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); }
-        .profile-trigger { display: flex; align-items: center; gap: 12px; cursor: pointer; padding: 5px 15px; border-radius: 20px; transition: 0.3s; border: 1px solid rgba(255,255,255,0.1); }
-        .profile-trigger:hover { background: rgba(255,255,255,0.1); }
-        .nav-avatar { width: 35px; height: 35px; border-radius: 50%; object-fit: cover; background: var(--primary); }
-        .verified-badge { color: #00b0f4; font-size: 14px; margin-left: 4px; }
+        .app-container { display: flex; height: 100vh; width: 100vw; }
 
-        /* Чат (в стиле ТГ) */
-        .chat-container { position: fixed; bottom: 20px; right: 20px; width: 350px; height: 450px; background: var(--card); border-radius: 15px; display: flex; flex-direction: column; border: 1px solid #2b2d31; box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 90; }
-        .chat-header { padding: 15px; background: #232428; border-radius: 15px 15px 0 0; font-weight: bold; border-bottom: 1px solid #2b2d31; }
-        .chat-messages { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; }
-        .msg { background: #2e3035; padding: 8px 12px; border-radius: 10px; max-width: 80%; width: fit-content; font-size: 14px; }
-        .msg-name { font-size: 11px; color: var(--primary); font-weight: bold; margin-bottom: 4px; display: flex; align-items: center; }
-        .chat-input { padding: 15px; display: flex; gap: 10px; }
-        .chat-input input { flex: 1; background: #1e1f22; border: none; padding: 10px; border-radius: 8px; color: white; outline: none; }
-        .chat-input button { background: var(--primary); border: none; color: white; padding: 0 15px; border-radius: 8px; cursor: pointer; }
+        /* Боковая панель (Список друзей/чатов) */
+        .sidebar { width: 300px; background: var(--side); border-right: 1px solid #27272a; display: flex; flex-direction: column; z-index: 10; }
+        .sidebar-header { padding: 20px; font-weight: 800; font-size: 20px; border-bottom: 1px solid #27272a; letter-spacing: 1px; color: var(--primary); }
+        .contact-list { flex: 1; overflow-y: auto; padding: 10px; }
+        .contact { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 10px; cursor: pointer; transition: 0.2s; margin-bottom: 5px; }
+        .contact:hover { background: #27272a; }
+        .contact img { width: 40px; height: 40px; border-radius: 50%; background: #3f3f46; }
+        .contact-info div { font-size: 14px; font-weight: 600; }
+        .contact-info span { font-size: 11px; color: var(--text-muted); }
 
-        /* Главный контент */
-        .main { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; text-align: center; }
-        h1 { font-size: 4rem; margin: 0; background: linear-gradient(135deg, #fff 40%, #5865F2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .btn-apply { background: var(--primary); color: white; padding: 18px 50px; border-radius: 15px; text-decoration: none; font-weight: bold; margin-top: 25px; transition: 0.3s; }
-        .btn-apply:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(88,101,242,0.4); }
+        /* Главная область */
+        .main-content { flex: 1; display: flex; flex-direction: column; position: relative; }
+        
+        /* Верхняя панель профиля */
+        .top-nav { height: 60px; display: flex; justify-content: flex-end; align-items: center; padding: 0 30px; background: rgba(0,0,0,0.2); backdrop-filter: blur(10px); }
+        .user-pill { display: flex; align-items: center; gap: 10px; background: #27272a; padding: 5px 15px; border-radius: 20px; cursor: pointer; border: 1px solid #3f3f46; }
+        .user-pill img { width: 25px; height: 25px; border-radius: 50%; }
+
+        /* Центральный блок */
+        .hero { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; }
+        .hero h1 { font-size: 5rem; margin: 0; background: linear-gradient(to right, #fff, var(--primary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 900; }
+        .hero p { max-width: 600px; color: var(--text-muted); font-size: 1.1rem; line-height: 1.6; margin: 20px 0; }
+        
+        .discord-promo { background: rgba(88, 101, 242, 0.1); border: 1px solid var(--primary); padding: 20px; border-radius: 15px; margin-top: 20px; max-width: 400px; }
+        .discord-promo h4 { margin: 0 0 10px 0; color: var(--primary); }
+
+        /* Окно чата (выплывающее) */
+        .messenger-ui { position: absolute; bottom: 30px; right: 30px; width: 400px; height: 500px; background: var(--chat-bg); border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.8); display: none; flex-direction: column; border: 1px solid #3f3f46; animation: slideIn 0.3s ease; }
+        @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        
+        .chat-head { padding: 15px; border-bottom: 1px solid #27272a; display: flex; justify-content: space-between; align-items: center; }
+        .chat-body { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        .my-msg { align-self: flex-end; background: var(--primary); padding: 8px 15px; border-radius: 15px 15px 2px 15px; font-size: 14px; }
+        .other-msg { align-self: flex-start; background: #27272a; padding: 8px 15px; border-radius: 15px 15px 15px 2px; font-size: 14px; }
+        .chat-foot { padding: 15px; display: flex; gap: 10px; }
+        .chat-foot input { flex: 1; background: #09090b; border: 1px solid #27272a; padding: 10px; border-radius: 10px; color: white; outline: none; }
 
         /* Модалка настроек */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; }
-        .modal-content { background: var(--card); padding: 30px; border-radius: 20px; width: 350px; text-align: center; }
-        .modal-content input { width: 100%; padding: 10px; margin: 10px 0; background: #1e1f22; border: 1px solid #2b2d31; color: white; border-radius: 8px; box-sizing: border-box; }
-        .save-btn { width: 100%; padding: 12px; background: var(--primary); border: none; color: white; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-box { background: var(--side); padding: 30px; border-radius: 20px; width: 320px; border: 1px solid #27272a; }
+        .modal-box input { width: 100%; padding: 12px; margin: 10px 0; background: #09090b; border: 1px solid #27272a; color: white; border-radius: 10px; box-sizing: border-box; }
+        .btn-save { width: 100%; padding: 12px; background: var(--primary); border: none; color: white; border-radius: 10px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <div class="video-background">
+    <div class="v-bg">
         <iframe src="https://www.youtube.com/embed/SIdW9vB9n6E?autoplay=1&mute=1&controls=0&loop=1&playlist=SIdW9vB9n6E" allow="autoplay"></iframe>
     </div>
     <div class="overlay"></div>
 
-    <nav class="navbar">
-        <div style="font-weight: 800; font-size: 20px;">SMARLOWW</div>
-        <div class="profile-trigger" onclick="openSettings()">
-            <img src="" id="nav-avatar" class="nav-avatar" onerror="this.src='https://ui-avatars.com/api/?name=User&background=5865F2&color=fff'">
-            <span id="nav-username">Гость</span>
-            <span id="nav-badge"></span>
-        </div>
-    </nav>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">SMARLOWW HUB</div>
+            <div class="contact-list">
+                <div class="contact" onclick="openChat('System Bot', 'https://cdn-icons-png.flaticon.com/512/4712/4712035.png')">
+                    <img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png">
+                    <div class="contact-info"><div>Система</div><span>Online</span></div>
+                </div>
+                <div class="contact" onclick="openChat('Monster Friend', 'https://ui-avatars.com/api/?name=Monster&background=ed4245&color=fff')">
+                    <img src="https://ui-avatars.com/api/?name=Monster&background=ed4245&color=fff">
+                    <div class="contact-info"><div>Monster (Friend)</div><span>ID: 10084485831</span></div>
+                </div>
+            </div>
+        </aside>
 
-    <div class="main">
-        <h1>SMARLOWW</h1>
-        <p style="color: var(--text-muted); max-width: 500px;">Стань частью легендарного сервера. Мы ищем тех, кто готов менять правила игры и Дискорда. Будем ждать...</p>
-        <a href="apply.html" class="btn-apply">ПОДАТЬ ЗАЯВКУ</a>
+        <main class="main-content">
+            <nav class="top-nav">
+                <div class="user-pill" onclick="toggleModal(true)">
+                    <img src="" id="user-av" onerror="this.src='https://ui-avatars.com/api/?name=U'">
+                    <span id="user-name">Гость</span>
+                    <span id="v-check"></span>
+                </div>
+            </nav>
+
+            <div class="hero">
+                <h1>SMARLOWW</h1>
+                <p>Стань частью легендарного сервера про разные игры. Мы ищем тех, кто готов менять правила игры и Дискорда. Будем ждать...</p>
+                
+                <div class="discord-promo">
+                    <h4>Наш официальный Дискорд</h4>
+                    <p style="font-size: 0.9rem; margin: 0;">Тут живет наше комьюнити, проходят наборы в команду и решаются судьбы проекта. Присоединяйся к mercy.mie и остальным!</p>
+                </div>
+
+                <a href="apply.html" style="background:var(--primary); color:white; padding:15px 40px; border-radius:12px; text-decoration:none; font-weight:bold; margin-top:30px;">ПОДАТЬ ЗАЯВКУ</a>
+            </div>
+
+            <div class="messenger-ui" id="chat-ui">
+                <div class="chat-head">
+                    <span id="chat-with">Чат</span>
+                    <button onclick="closeChat()" style="background:none; border:none; color:white; cursor:pointer;">✕</button>
+                </div>
+                <div class="chat-body" id="chat-flow">
+                    <div class="other-msg">Привет! Как дела на сервере?</div>
+                </div>
+                <div class="chat-foot">
+                    <input type="text" id="m-input" placeholder="Сообщение...">
+                    <button onclick="sendMsg()" style="background:var(--primary); border:none; color:white; padding:10px; border-radius:10px; cursor:pointer;">➤</button>
+                </div>
+            </div>
+        </main>
     </div>
 
-    <div class="chat-container">
-        <div class="chat-header">🌐 Общий чат</div>
-        <div class="chat-messages" id="chat-box">
-            <div class="msg"><div class="msg-name">Система</div>Добро пожаловать в чат Smarloww!</div>
-        </div>
-        <div class="chat-input">
-            <input type="text" id="chat-input" placeholder="Напишите сообщение...">
-            <button onclick="sendMessage()">➤</button>
-        </div>
-    </div>
-
-    <div class="modal" id="settingsModal">
-        <div class="modal-content">
-            <h3 style="margin-top:0">Настройки профиля</h3>
-            <input type="text" id="set-name" placeholder="Твой ник">
-            <input type="text" id="set-avatar" placeholder="Ссылка на аватарку (URL)">
-            <input type="text" id="set-discord" placeholder="Discord (например: mercy.mie)">
-            <button class="save-btn" onclick="saveProfile()">СОХРАНИТЬ</button>
-            <button class="save-btn" style="background:#4f545c" onclick="closeSettings()">ОТМЕНА</button>
+    <div class="modal" id="m-settings">
+        <div class="modal-box">
+            <h3>Профиль</h3>
+            <input type="text" id="in-name" placeholder="Ник">
+            <input type="text" id="in-av" placeholder="Ссылка на фото">
+            <input type="text" id="in-ds" placeholder="Discord (mercy.mie для галочки)">
+            <button class="btn-save" onclick="save()">СОХРАНИТЬ</button>
+            <button onclick="toggleModal(false)" style="background:none; border:none; color:var(--text-muted); width:100%; margin-top:10px; cursor:pointer;">Закрыть</button>
         </div>
     </div>
 
     <script>
-        const chatBox = document.getElementById('chat-box');
-
         window.onload = () => {
-            loadProfile();
-            loadMessages();
-        };
-
-        function openSettings() { document.getElementById('settingsModal').style.display = 'flex'; }
-        function closeSettings() { document.getElementById('settingsModal').style.display = 'none'; }
-
-        function saveProfile() {
-            const name = document.getElementById('set-name').value;
-            const av = document.getElementById('set-avatar').value;
-            const ds = document.getElementById('set-discord').value;
-
-            localStorage.setItem('sm_name', name);
-            localStorage.setItem('sm_avatar', av);
-            localStorage.setItem('sm_discord', ds);
-
-            loadProfile();
-            closeSettings();
-        }
-
-        function loadProfile() {
-            const name = localStorage.getItem('sm_name') || 'Гость';
-            const av = localStorage.getItem('sm_avatar') || '';
-            const ds = localStorage.getItem('sm_discord') || '';
-
-            document.getElementById('nav-username').innerText = name;
-            if(av) document.getElementById('nav-avatar').src = av;
+            const n = localStorage.getItem('sn') || 'Гость';
+            const a = localStorage.getItem('sa') || '';
+            const d = localStorage.getItem('sd') || '';
             
-            // Галочка для тебя!
-            const badge = document.getElementById('nav-badge');
-            if (ds.toLowerCase() === 'mercy.mie') {
-                badge.innerHTML = ' <span title="Верифицированный владелец" style="color:#00b0f4">✔</span>';
-                localStorage.setItem('is_verified', 'true');
-            } else {
-                badge.innerHTML = '';
+            document.getElementById('user-name').innerText = n;
+            if(a) document.getElementById('user-av').src = a;
+            
+            if(d.toLowerCase() === 'mercy.mie') {
+                document.getElementById('v-check').innerHTML = ' <span style="color:#00b0f4">✔</span>';
             }
 
-            document.getElementById('set-name').value = name;
-            document.getElementById('set-avatar').value = av;
-            document.getElementById('set-discord').value = ds;
+            document.getElementById('in-name').value = n;
+            document.getElementById('in-av').value = a;
+            document.getElementById('in-ds').value = d;
+        };
+
+        function toggleModal(s) { document.getElementById('m-settings').style.display = s ? 'flex' : 'none'; }
+
+        function save() {
+            localStorage.setItem('sn', document.getElementById('in-name').value);
+            localStorage.setItem('sa', document.getElementById('in-av').value);
+            localStorage.setItem('sd', document.getElementById('in-ds').value);
+            location.reload();
         }
 
-        function sendMessage() {
-            const input = document.getElementById('chat-input');
-            if(!input.value) return;
-
-            const name = localStorage.getItem('sm_name') || 'Гость';
-            const ds = localStorage.getItem('sm_discord') || '';
-            const isV = (ds.toLowerCase() === 'mercy.mie') ? '<span style="color:#00b0f4">✔</span>' : '';
-
-            const msgData = {
-                name: name,
-                text: input.value,
-                badge: isV
-            };
-
-            // Сохраняем в локальную память чата
-            let msgs = JSON.parse(localStorage.getItem('sm_chat') || '[]');
-            msgs.push(msgData);
-            localStorage.setItem('sm_chat', JSON.stringify(msgs));
-
-            input.value = '';
-            renderMessages();
+        function openChat(name, av) {
+            document.getElementById('chat-ui').style.display = 'flex';
+            document.getElementById('chat-with').innerText = name;
         }
 
-        function renderMessages() {
-            const msgs = JSON.parse(localStorage.getItem('sm_chat') || '[]');
-            chatBox.innerHTML = '<div class="msg"><div class="msg-name">Система</div>Добро пожаловать в чат Smarloww!</div>';
-            msgs.forEach(m => {
-                const div = document.createElement('div');
-                div.className = 'msg';
-                div.innerHTML = `<div class="msg-name">${m.name} ${m.badge}</div>${m.text}`;
-                chatBox.appendChild(div);
-            });
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
+        function closeChat() { document.getElementById('chat-ui').style.display = 'none'; }
 
-        function loadMessages() { renderMessages(); }
+        function sendMsg() {
+            const i = document.getElementById('m-input');
+            if(!i.value) return;
+            const d = document.createElement('div');
+            d.className = 'my-msg';
+            d.innerText = i.value;
+            document.getElementById('chat-flow').appendChild(d);
+            i.value = '';
+            document.getElementById('chat-flow').scrollTop = document.getElementById('chat-flow').scrollHeight;
+        }
     </script>
 </body>
 </html>
